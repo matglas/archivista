@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import SearchBar from './components/SearchBar';
+import ReactJson from 'react-json-view';
 
 function App() {
   const [searchedHash, setSearchedHash] = useState('');
@@ -67,7 +68,7 @@ function App() {
             <h4>Result</h4>
             <div className="border p-3">
               {result ? (
-                <pre>{JSON.stringify(result, null, 2)}</pre>
+                <ReactJson src={result} theme="monokai" />
               ) : (
                 <p className="text-muted">No result to display.</p>
               )}
