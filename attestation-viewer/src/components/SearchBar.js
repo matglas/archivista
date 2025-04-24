@@ -1,30 +1,37 @@
 import React, { useState } from 'react';
 
-const SearchBar = ({ onSearch }) => {
-  const [hash, setHash] = useState('');
+function SearchBar({ onSearch }) {
+  const [inputValue, setInputValue] = useState('');
 
-  const handleSearch = () => {
-    if (hash.trim()) {
-      onSearch(hash);
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      onSearch(inputValue);
     }
   };
 
+  const handleButtonClick = () => {
+    onSearch(inputValue);
+  };
+
   return (
-    <div className="container mt-4">
-      <div className="input-group">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Enter Git SHA hash"
-          value={hash}
-          onChange={(e) => setHash(e.target.value)}
-        />
-        <button className="btn btn-primary" onClick={handleSearch}>
-          Search
-        </button>
-      </div>
+    <div className="search-bar d-flex">
+      <input
+        type="text"
+        className="form-control me-2"
+        placeholder="Enter hash to search"
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown} // Trigger search on Enter key press
+      />
+      <button className="btn btn-primary" onClick={handleButtonClick}>
+        Search
+      </button>
     </div>
   );
-};
+}
 
 export default SearchBar;

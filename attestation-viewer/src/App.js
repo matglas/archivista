@@ -69,22 +69,37 @@ function App() {
       const subjects = resultData.data.subjects.edges;
 
       if (subjects.length > 0) {
-        const gitoid = subjects[0].node.statement.dsse[0].gitoidSha256;
+        const uniqueGitoids = new Map();
 
-        // Fetch the full statement using the gitoid with the correct endpoint
-        const statementResponse = await fetch(`${archivistaEndpoint}/download/${gitoid}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+        // Collect unique gitoidSha256 values and their associated node names
+        subjects.forEach(({ node }) => {
+          const gitoid = node.statement.dsse[0].gitoidSha256;
+          if (!uniqueGitoids.has(gitoid)) {
+            uniqueGitoids.set(gitoid, new Set());
+          }
+          uniqueGitoids.get(gitoid).add(node.name);
         });
 
-        if (!statementResponse.ok) {
-          throw new Error(`HTTP error! status: ${statementResponse.status}`);
+        const results = [];
+
+        // Fetch statements for each unique gitoidSha256
+        for (const [gitoid, names] of uniqueGitoids.entries()) {
+          const statementResponse = await fetch(`${archivistaEndpoint}/download/${gitoid}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (!statementResponse.ok) {
+            throw new Error(`HTTP error! status: ${statementResponse.status}`);
+          }
+
+          const statementData = await statementResponse.json();
+          results.push({ gitoid, names: Array.from(names), statement: statementData });
         }
 
-        const statementData = await statementResponse.json();
-        setResult(statementData);
+        setResult(results);
       } else {
         setResult(null);
       }
@@ -130,10 +145,20 @@ function App() {
 
           {/* Result Section */}
           <div className="col-12">
-            <h4>Result</h4>
+            <h4>Results</h4>
             <div className="border p-3">
               {result ? (
-                <ReactJson src={result} theme="monokai" />
+                result.map(({ gitoid, names, statement }) => (
+                  <div key={gitoid} className="mb-4">
+                    <h5>Statement Gitoid: {gitoid}</h5>
+                    <ul>
+                      {names.map((name) => (
+                        <li key={name}>{name}</li>
+                      ))}
+                    </ul>
+                    <ReactJson src={statement} theme="monokai" />
+                  </div>
+                ))
               ) : (
                 <p className="text-muted">No result to display.</p>
               )}
