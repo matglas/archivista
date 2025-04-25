@@ -1,3 +1,97 @@
+/* CSS */
+.color-1 {
+  color: #1f3a61;
+}
+.color-2 {
+  color: #497c92;
+}
+.color-3 {
+  color: #6ec1c4;
+}
+.color-4 {
+  color: #f9a64e;
+}
+.color-5 {
+  color: #e83f21;
+}
+
+/* CSS Variables */
+:root {
+  /* Existing Colors */
+  --color-1: #1f3a61;
+  --color-1-light: #4a5f85; /* Light variant of #1f3a61 */
+  --color-2: #497c92;
+  --color-2-light: #7fa6b3; /* Light variant of #497c92 */
+  --color-3: #6ec1c4;
+  --color-3-light: #a8e0e1; /* Light variant of #6ec1c4 */
+  --color-4: #f9a64e;
+  --color-4-light: #fbc98a; /* Light variant of #f9a64e */
+  --color-5: #e83f21;
+  --color-5-light: #f27a66; /* Light variant of #e83f21 */
+
+  /* Grayscale */
+  --gray-1-light: #d3d6df;
+  --gray-1-medium: #8a8f9f;
+  --gray-1-dark: #3a3f5a;
+  --gray-2-light: #d6e0e4;
+  --gray-2-medium: #8fa3ad;
+  --gray-2-dark: #4a5a63;
+  --gray-3-light: #d9ecec;
+  --gray-3-medium: #9fbcbc;
+  --gray-3-dark: #5a6e6e;
+  --gray-4-light: #fce7d1;
+  --gray-4-medium: #d9b89a;
+  --gray-4-dark: #8f6a4d;
+  --gray-5-light: #f7d6d1;
+  --gray-5-medium: #d49b96;
+  --gray-5-dark: #8a4d4a;
+
+  /* Bootstrap Variables */
+  --bs-primary: var(--color-1);
+  --bs-primary-rgb: 31, 58, 97; /* RGB for #1f3a61 */
+  --bs-secondary: var(--gray-2-medium);
+  --bs-secondary-rgb: 143, 163, 173; /* RGB for #8fa3ad */
+  --bs-success: var(--color-3);
+  --bs-success-rgb: 110, 193, 196; /* RGB for #6ec1c4 */
+  --bs-info: var(--color-2);
+  --bs-info-rgb: 73, 124, 146; /* RGB for #497c92 */
+  --bs-warning: var(--color-4);
+  --bs-warning-rgb: 249, 166, 78; /* RGB for #f9a64e */
+  --bs-danger: var(--color-5);
+  --bs-danger-rgb: 232, 63, 33; /* RGB for #e83f21 */
+  --bs-light: var(--gray-3-light);
+  --bs-light-rgb: 217, 236, 236; /* RGB for #d9ecec */
+  --bs-dark: var(--gray-1-dark);
+  --bs-dark-rgb: 58, 63, 90; /* RGB for #3a3f5a */
+
+  /* Additional Bootstrap Variables */
+  --bs-body-bg: var(--bs-white);
+  --bs-body-color: var(--bs-primary);
+  --bs-border-color: var(--gray-2-medium);
+  --bs-link-color: var(--color-1);
+  --bs-link-hover-color: var(--color-1-light);
+  --bs-navbar-brand-color: var(--color-1);
+  --bs-navbar-brand-hover-color: var(--color-1-light);
+  --bs-btn-primary-bg: var(--color-1);
+  --bs-btn-primary-border-color: var(--color-1);
+  --bs-btn-primary-hover-bg: var(--color-1-light);
+  --bs-btn-primary-hover-border-color: var(--color-1-light);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-1)
+}
+
+.btn-primary {
+  background-color: var(--color-1-light);
+  border-color: var(--color-1-light);
+  color: white;
+}
+.btn-primary:hover {
+  background-color: var(--color-1);
+  border-color: var(--color-1);
+}
+
 .App {
   
 }
@@ -14,7 +108,7 @@
 }
 
 .App header.App-header {
-  background-color: #30638e;
+  background-color: var(--gray-1-light);
 }
 
 .App-header {
@@ -22,11 +116,15 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
 }
 
 .App-link {
   color: #61dafb;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 @keyframes App-logo-spin {

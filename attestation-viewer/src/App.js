@@ -96,7 +96,17 @@ function App() {
           }
 
           const statementData = await statementResponse.json();
-          results.push({ gitoid, names: Array.from(names), statement: statementData });
+
+          // Decode the payload and separate signatures
+          const decodedPayload = JSON.parse(atob(statementData.payload)); // Decode Base64 payload
+          const signatures = statementData.signatures; // Extract signatures
+
+          results.push({
+            gitoid,
+            names: Array.from(names),
+            statement: decodedPayload, // Use the decoded payload
+            signatures, // Store signatures separately
+          });
         }
 
         setResult(results);
@@ -112,12 +122,18 @@ function App() {
   return (
     <div className="App">
       {/* Header Section */}
-      <header className="App-header text-white py-3">
+      <header className="App-header py-3">
         <div className="container">
           <div className="row align-items-center">
-            {/* Title Section */}
-            <div className="col-md-6">
-              <h1 className="mb-0">Archivista Attestation Viewer</h1>
+            {/* Logo Section */}
+            <div className="col-md-6 navbar-brand">
+              <img
+                src="/logo512.png"
+                alt="in-toto Logo"
+                className="img-fluid"
+                style={{ maxHeight: '50px' }}
+              />
+              Archivista Attestation Viewer
             </div>
 
             {/* Search Bar Section */}
@@ -146,23 +162,27 @@ function App() {
           {/* Result Section */}
           <div className="col-12">
             <h4>Results</h4>
-            <div className="border p-3">
               {result ? (
-                result.map(({ gitoid, names, statement }) => (
-                  <div key={gitoid} className="mb-4">
+                result.map(({ gitoid, names, statement, signatures }) => (
+                  <div key={gitoid} className="border p-3 mb-4">
                     <h5>Statement Gitoid: {gitoid}</h5>
+                    <b>Subjects:</b>
                     <ul>
                       {names.map((name) => (
                         <li key={name}>{name}</li>
                       ))}
                     </ul>
-                    <ReactJson src={statement} theme="monokai" />
+                    <b>Signatures:</b> {signatures.length}
+                    <ReactJson
+                      src={statement}
+                      theme="rjv-default" // Use a light theme
+                      style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }} // Enable line wrapping
+                    />
                   </div>
                 ))
               ) : (
                 <p className="text-muted">No result to display.</p>
               )}
-            </div>
           </div>
         </div>
       </div>
