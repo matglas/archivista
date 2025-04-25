@@ -1,20 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { SearchContext } from '../context/SearchContext';
 
-function SearchBar({ onSearch }) {
+function SearchBar() {
   const [inputValue, setInputValue] = useState('');
+  const { handleSearch } = useContext(SearchContext);
 
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      onSearch(inputValue);
+  const onSearch = () => {
+    if (inputValue.trim()) {
+      handleSearch(inputValue);
     }
-  };
-
-  const handleButtonClick = () => {
-    onSearch(inputValue);
   };
 
   return (
@@ -24,10 +18,10 @@ function SearchBar({ onSearch }) {
         className="form-control me-2"
         placeholder="Enter hash to search"
         value={inputValue}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown} // Trigger search on Enter key press
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && onSearch()}
       />
-      <button className="btn btn-primary" onClick={handleButtonClick}>
+      <button className="btn btn-primary" onClick={onSearch}>
         Search
       </button>
     </div>

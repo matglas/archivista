@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactJson from 'react-json-view';
+import { SearchContext } from '../context/SearchContext';
 
-function ResultList({ result }) {
+function ResultList() {
+  const { searchResults } = useContext(SearchContext);
+
+  if (!searchResults) {
+    return <p>No results found.</p>;
+  }
+
+  const result = searchResults;
+
   return (
     <div className="col-12">
       {result ? (
         result.map(({ gitoid, names, statement, signatures }) => (
           <div key={gitoid} className="border p-3 mb-4">
             <h5>Statement Gitoid: {gitoid}</h5>
-            
             <div>
                 <b>Matching subjects:</b>
                 <ul>
@@ -39,7 +47,7 @@ function ResultList({ result }) {
                 collapsed={true}
                 theme="rjv-default" // Use a light theme
                 style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }} // Enable line wrapping
-                />
+              />
             </div>
           </div>
         ))

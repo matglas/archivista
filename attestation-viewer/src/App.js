@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './App.css';
 import SearchBar from './components/SearchBar';
 import ResultList from './components/ResultList';
-import { handleSearch } from './utils/searchUtils'; // Import the extracted function
+import { SearchContext } from './context/SearchContext';
 
 function App() {
-  const [searchedHash, setSearchedHash] = useState('');
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const { searchResults, loading } = useContext(SearchContext);
 
   useEffect(() => {
     document.title = 'Archivista Attestation Viewer';
   }, []);
-
-  const handleSearchWithLoading = async (hash) => {
-    setLoading(true); // Set loading to true
-    await handleSearch(hash, setSearchedHash, setResult);
-    setLoading(false); // Set loading to false after search completes
-  };
 
   return (
     <div className="App">
@@ -35,7 +27,7 @@ function App() {
               Archivista Attestation Viewer
             </div>
             <div className="col-md-6 text-end">
-              <SearchBar onSearch={handleSearchWithLoading} />
+              <SearchBar />
             </div>
           </div>
         </div>
@@ -48,16 +40,16 @@ function App() {
             <div className="border p-3">
               {loading ? (
                 <div className="text-muted">Loading...</div> // Show loading message
-              ) : searchedHash ? (
-                <div><span><strong>Search hash:</strong></span> {searchedHash}</div>
+              ) : searchResults ? (
+                <div><span><strong>Search results loaded.</strong></span></div>
               ) : (
-                <div className="text-muted">No hash searched yet.</div>
+                <div className="text-muted">No results found.</div>
               )}
             </div>
           </div>
 
           {/* Use the ResultList component */}
-          <ResultList result={result} />
+          <ResultList />
         </div>
       </div>
     </div>
