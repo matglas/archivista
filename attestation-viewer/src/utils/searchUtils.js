@@ -1,5 +1,31 @@
 import yaml from 'js-yaml';
 
+// Helper function to get the search history from cookies
+const getSearchHistory = () => {
+  const history = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('searchHistory='));
+  return history ? JSON.parse(decodeURIComponent(history.split('=')[1])) : [];
+};
+
+// Helper function to update the search history in cookies
+const updateSearchHistory = (hash) => {
+  const history = getSearchHistory();
+  if (!history.includes(hash)) {
+    history.push(hash);
+    document.cookie = `searchHistory=${encodeURIComponent(
+      JSON.stringify(history)
+    )}; path=/; max-age=31536000`; // 1 year expiration
+  }
+};
+
+// Helper function to clear the search history
+export const clearSearchHistory = (setSearchedHash, setResult) => {
+  document.cookie = 'searchHistory=; path=/; max-age=0'; // Clear the cookie
+  setSearchedHash(null);
+  setResult(null);
+};
+
 export const loadConfig = async () => {
   const response = await fetch('/config.yaml');
   const text = await response.text();
@@ -8,6 +34,7 @@ export const loadConfig = async () => {
 
 export const handleSearch = async (hash, setSearchedHash, setResult) => {
   setSearchedHash(hash);
+  updateSearchHistory(hash); // Add the hash to the search history
 
   const query = `
     query($digest: String!) {
@@ -56,6 +83,8 @@ export const handleSearch = async (hash, setSearchedHash, setResult) => {
     const resultData = await response.json();
     const subjects = resultData.data.subjects.edges;
 
+    const results = []; // Use the current results as the base
+
     if (subjects.length > 0) {
       const uniqueGitoids = new Map();
 
@@ -67,8 +96,6 @@ export const handleSearch = async (hash, setSearchedHash, setResult) => {
         }
         uniqueGitoids.get(gitoid).add(node.name);
       });
-
-      const results = [];
 
       // Fetch statements for each unique gitoidSha256
       for (const [gitoid, names] of uniqueGitoids.entries()) {
@@ -97,9 +124,9 @@ export const handleSearch = async (hash, setSearchedHash, setResult) => {
         });
       }
 
-      setResult(results);
+      setResult(results); // Update the state with the new results
     } else {
-      setResult(null);
+      setResult(null); // Clear results if no subjects are found
     }
   } catch (error) {
     console.error('Error fetching data:', error);
