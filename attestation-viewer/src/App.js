@@ -2,10 +2,21 @@ import React, { useContext, useEffect, useState } from 'react';
 import './App.css';
 import SearchBar from './components/SearchBar';
 import ResultList from './components/ResultList';
+import SearchAction from './components/SearchAction';
 import { SearchContext } from './context/SearchContext';
 
 function App() {
-  const { searchResults, loading } = useContext(SearchContext);
+  const { searchResults, loading, setSearchResults } = useContext(SearchContext);
+
+  const handleSearch = async (query) => {
+    try {
+      const results = await SearchAction(query); // Call SearchAction with the query
+      setSearchResults(results); // Update the search results in the context
+    } catch (error) {
+      console.error('Error performing search:', error);
+      setSearchResults(null); // Handle errors gracefully
+    }
+  };
 
   useEffect(() => {
     document.title = 'Archivista Attestation Viewer';
@@ -27,7 +38,7 @@ function App() {
               Archivista Attestation Viewer
             </div>
             <div className="col-md-6 text-end">
-              <SearchBar />
+              <SearchBar onSearch={handleSearch} /> {/* Pass handleSearch to SearchBar */}
             </div>
           </div>
         </div>
@@ -37,15 +48,7 @@ function App() {
       <div className="container mt-4">
         <div className="row">
           <div className="col-12 mb-4">
-            <div className="border p-3">
-              {loading ? (
-                <div className="text-muted">Loading...</div> // Show loading message
-              ) : searchResults ? (
-                <div><span><strong>Search results loaded.</strong></span></div>
-              ) : (
-                <div className="text-muted">No results found.</div>
-              )}
-            </div>
+            <SearchAction /> {/* Use the SearchAction component */}
           </div>
 
           {/* Use the ResultList component */}

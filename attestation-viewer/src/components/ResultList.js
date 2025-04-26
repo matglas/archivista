@@ -18,7 +18,7 @@ function ResultList() {
           <div key={gitoid} className="border p-3 mb-4">
             <div className="mb-2">
               <div>DSSE Gitoid: {gitoid}</div>
-              <div class="xs-text">
+              <div className="xs-text">
                   <b>Predicate:</b> {nodes[0].predicate}
               </div>
             </div>
@@ -27,36 +27,11 @@ function ResultList() {
                 <b>Matching subjects:</b>
                 <ul>
                 {nodes.map((node) => (
-                    <li key={node.name}>{node.name}, {node.predicate}</li>
+                    <li key={node.name}>{node.name}</li>
                 ))}
                 </ul>
             </div>
 
-            <div style="display: none;">
-            <div>
-                <b>Signatures:</b> {signatures.length}
-            </div>
-            <div>
-                <ReactJson
-                    src={signatures}
-                    name={false} // Do not show the name of the object
-                    collapsed={true}
-                    theme="rjv-default" // Use a light theme
-                    style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }} // Enable line wrapping
-                />
-            </div>
-
-            <div>
-                <b>Payload:</b>
-                <ReactJson
-                src={statement}
-                name={false} // Do not show the name of the object
-                collapsed={true}
-                theme="rjv-default" // Use a light theme
-                style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }} // Enable line wrapping
-              />
-            </div>
-            <div>
           </div>
         ))
       ) : (
