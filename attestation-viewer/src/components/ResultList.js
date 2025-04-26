@@ -14,18 +14,25 @@ function ResultList() {
   return (
     <div className="col-12">
       {result ? (
-        result.map(({ gitoid, names, statement, signatures }) => (
+        result.map(({ gitoid, nodes, statement, signatures }) => (
           <div key={gitoid} className="border p-3 mb-4">
-            <h5>Statement Gitoid: {gitoid}</h5>
+            <div className="mb-2">
+              <div>DSSE Gitoid: {gitoid}</div>
+              <div class="xs-text">
+                  <b>Predicate:</b> {nodes[0].predicate}
+              </div>
+            </div>
+
             <div>
                 <b>Matching subjects:</b>
                 <ul>
-                {names.map((name) => (
-                    <li key={name}>{name}</li>
+                {nodes.map((node) => (
+                    <li key={node.name}>{node.name}, {node.predicate}</li>
                 ))}
                 </ul>
             </div>
-            
+
+            <div style="display: none;">
             <div>
                 <b>Signatures:</b> {signatures.length}
             </div>
@@ -49,6 +56,7 @@ function ResultList() {
                 style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }} // Enable line wrapping
               />
             </div>
+            <div>
           </div>
         ))
       ) : (

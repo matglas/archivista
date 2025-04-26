@@ -82,6 +82,10 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-1)
 }
 
+.xs-text {
+  font-size: 0.75rem;
+}
+
 .btn-primary {
   background-color: var(--color-1-light);
   border-color: var(--color-1-light);

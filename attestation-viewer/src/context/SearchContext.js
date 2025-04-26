@@ -44,9 +44,23 @@ export const SearchProvider = ({ children }) => {
               }
               statement {
                 id
+                predicate
+
                 dsse {
                   id
                   gitoidSha256
+                }
+                subjects {
+                  totalCount
+                  edges {
+                    node {
+                      name
+                      subjectDigests {
+                        algorithm
+                        value
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -85,10 +99,15 @@ export const SearchProvider = ({ children }) => {
           if (!uniqueGitoids.has(gitoid)) {
             uniqueGitoids.set(gitoid, new Set());
           }
-          uniqueGitoids.get(gitoid).add(node.name);
+          uniqueGitoids.get(gitoid).add(
+            {
+              name: node.name, 
+              predicate: node.statement.predicate 
+            }
+          );
         });
 
-        for (const [gitoid, names] of uniqueGitoids.entries()) {
+        for (const [gitoid, nodes] of uniqueGitoids.entries()) {
           const statementResponse = await fetch(`${archivistaEndpoint}/download/${gitoid}`, {
             method: 'GET',
             headers: {
@@ -106,7 +125,7 @@ export const SearchProvider = ({ children }) => {
 
           results.push({
             gitoid,
-            names: Array.from(names),
+            nodes: Array.from(nodes),
             statement: decodedPayload,
             signatures,
           });
