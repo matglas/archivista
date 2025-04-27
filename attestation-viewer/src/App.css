@@ -96,6 +96,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--color-1);
 }
 
+.modal-lg {
+  max-width: 800px;
+}
+
 .App {
   
 }
