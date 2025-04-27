@@ -27,6 +27,37 @@ export const SearchProvider = ({ children }) => {
     return yaml.load(text);
   };
 
+  // Fetch the statement for a specific gitoid
+  const fetchStatement = async (gitoid) => {
+    try {
+      const config = await loadConfig();
+      const archivistaEndpoint = config.archivistaEndpoint;
+
+      const statementResponse = await fetch(`${archivistaEndpoint}/download/${gitoid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!statementResponse.ok) {
+        throw new Error(`HTTP error! status: ${statementResponse.status}`);
+      }
+
+      const statementData = await statementResponse.json();
+      const decodedPayload = JSON.parse(atob(statementData.payload));
+      const signatures = statementData.signatures;
+
+      return {
+        statement: decodedPayload,
+        signatures,
+      };
+    } catch (error) {
+      console.error(`Error fetching statement for gitoid ${gitoid}:`, error);
+      throw error;
+    }
+  };
+
   // Handle the search logic
   const handleSearch = async (hash) => {
     setLoading(true);
@@ -99,35 +130,18 @@ export const SearchProvider = ({ children }) => {
           if (!uniqueGitoids.has(gitoid)) {
             uniqueGitoids.set(gitoid, new Set());
           }
-          uniqueGitoids.get(gitoid).add(
-            {
-              name: node.name, 
-              predicate: node.statement.predicate 
-            }
-          );
+          uniqueGitoids.get(gitoid).add({
+            name: node.name,
+            predicate: node.statement.predicate,
+          });
         });
 
         for (const [gitoid, nodes] of uniqueGitoids.entries()) {
-          const statementResponse = await fetch(`${archivistaEndpoint}/download/${gitoid}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-
-          if (!statementResponse.ok) {
-            throw new Error(`HTTP error! status: ${statementResponse.status}`);
-          }
-
-          const statementData = await statementResponse.json();
-          const decodedPayload = JSON.parse(atob(statementData.payload));
-          const signatures = statementData.signatures;
-
           results.push({
             gitoid,
             nodes: Array.from(nodes),
-            statement: decodedPayload,
-            signatures,
+            statement: null, // Statement will be loaded on demand
+            signatures: null, // Signatures will be loaded on demand
           });
         }
       }
@@ -148,6 +162,7 @@ export const SearchProvider = ({ children }) => {
         searchResults,
         loading,
         handleSearch,
+        fetchStatement, // Expose the fetchStatement function
         addToHistory,
         clearHistory,
       }}

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './App.css';
 import SearchBar from './components/SearchBar';
-import ResultList from './components/ResultList';
+import SearchResults from './components/SearchResults';
 import SearchAction from './components/SearchAction';
 import { SearchContext } from './context/SearchContext';
 
@@ -52,7 +52,7 @@ function App() {
           </div>
 
           {/* Use the ResultList component */}
-          <ResultList />
+          <SearchResults />
         </div>
       </div>
     </div>
