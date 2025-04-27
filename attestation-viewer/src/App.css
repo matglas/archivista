@@ -139,6 +139,19 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-2)
 }
 
+/* Add styles for search-item */
+.search-item {
+  border-radius: 8px; /* Small rounded corners */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  cursor: pointer; /* Change cursor to indicate clickable */
+}
+
+.search-item:hover {
+  border-color: var(--color-1-dark); /* Tint darker border on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
