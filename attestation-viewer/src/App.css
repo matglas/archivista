@@ -65,11 +65,11 @@
   --bs-dark-rgb: 58, 63, 90; /* RGB for #3a3f5a */
 
   /* Additional Bootstrap Variables */
-  --bs-body-bg: var(--bs-white);
-  --bs-body-color: var(--bs-primary);
-  --bs-border-color: var(--gray-2-medium);
-  --bs-link-color: var(--color-1);
-  --bs-link-hover-color: var(--color-1-light);
+  --bs-body-bg: var(--bs-white); /* Ensure body background is set */
+  --bs-body-color: var(--gray-1-dark); /* Ensure body text color is set */
+  --bs-border-color: var(--gray-2-medium); /* Ensure border color is set */
+  --bs-link-color: var(--color-1); /* Ensure link color is set */
+  --bs-link-hover-color: var(--color-1-light); /* Ensure link hover color is set */
   --bs-navbar-brand-color: var(--color-1);
   --bs-navbar-brand-hover-color: var(--color-1-light);
   --bs-btn-primary-bg: var(--color-1);
@@ -135,20 +135,27 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
 }
 
-.search-item .predicate {
+.search-item .primary-details {
   color: var(--color-2)
+}
+
+.search-item .predicate-details {
+  font-size: 0.8rem;
+  color: var(--color-1);
+  border-left: 3px solid var(--bs-border-color);
 }
 
 /* Add styles for search-item */
 .search-item {
-  border-radius: 8px; /* Small rounded corners */
+  border-radius: 0px; /* Small rounded corners */
+  border-bottom: 1px solid var(--bs-border-color); /* Bottom border */
   transition: all 0.3s ease; /* Smooth transition for hover effects */
   cursor: pointer; /* Change cursor to indicate clickable */
 }
 
 .search-item:hover {
-  border-color: var(--color-1-dark); /* Tint darker border on hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+  border-color: var(--bs-primary); /* Use Bootstrap variable */
+  box-shadow: var(--bs-box-shadow); /* Use Bootstrap shadow utility */
   transform: translateY(-2px); /* Slight lift effect */
 }
 

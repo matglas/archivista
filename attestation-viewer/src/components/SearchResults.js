@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import ReactJson from 'react-json-view';
 import { SearchContext } from '../context/SearchContext';
+import WitnessCollectionSummary from './WitnessCollectionSummary';
 
 function SearchResults() {
   const { searchResults, fetchStatement } = useContext(SearchContext);
@@ -29,23 +30,27 @@ function SearchResults() {
 
   return (
     <div className="col-12">
-      {searchResults.map(({ gitoid, nodes }) => (
-        <div key={gitoid} className="border p-3 mb-4 search-item">
-          <div className="mb-2">
-            <div>DSSE Gitoid: {gitoid}</div>
-            <div className="xs-text predicate">
-              <b>Predicate:</b> {nodes[0].predicate}
+      {searchResults.map(({ gitoid, name, predicate, digestMatch, node }) => (
+        <div key={gitoid} className="p-3 mb-4 search-item" onClick={() => handleLoadStatement(gitoid)}>
+          <div className="col-12 mb-2">
+            <b>Subject match: {name}</b>
+            <div className="col-10 xs-text">
+              <div>{digestMatch}</div>
             </div>
           </div>
 
-          <div className='row align-items-end'> {/* Align content to the bottom */}
-            <div className="col-10 mb-2">
-              <b>Matching subjects:</b>
-              <ul>
-                {nodes.map((node) => (
-                  <li key={node.name}>{node.name}</li>
-                ))}
-              </ul>
+          <div className='col-12 predicate-details'>
+            <div class="m-1 p-1">
+            {predicate === 'https://witness.testifysec.com/attestation-collection/v0.1' ? (
+            <WitnessCollectionSummary witnessCollection={node} />
+             ) : (null) }
+             </div>
+          </div>
+
+          <div className="row align-items-end"> {/* Align content to the bottom */}
+            <div className="col-10 xs-text primary-details">
+              <div><b>Gitoid</b>: {gitoid}</div>
+              <div><b>Predicate:</b> {predicate}</div>
             </div>
 
             <div className="col-2 text-end">
@@ -72,7 +77,12 @@ function SearchResults() {
           <div className="modal-dialog modal-lg" role="document"> {/* Large modal */}
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Statement Details for {modalData.gitoid}</h5>
+                
+                <div className="row">
+                  <h5 className="modal-title">Statement details</h5>
+                  <div className="col-12 xs-text">{modalData.gitoid}</div>
+                </div>
+
                 <button
                   type="button"
                   className="btn-close"

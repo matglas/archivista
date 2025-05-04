@@ -61,6 +61,7 @@ export const SearchProvider = ({ children }) => {
   // Handle the search logic
   const handleSearch = async (hash) => {
     setLoading(true);
+    setSearchResults(null); // Clear current search results
     addToHistory(hash);
 
     const query = `
@@ -81,6 +82,7 @@ export const SearchProvider = ({ children }) => {
                   id
                   gitoidSha256
                 }
+                
                 subjects {
                   totalCount
                   edges {
@@ -93,6 +95,14 @@ export const SearchProvider = ({ children }) => {
                     }
                   }
                 }
+
+                attestationCollections {
+                  name
+                  attestations {
+                    type
+                  }
+                }
+
               }
             }
           }
@@ -121,30 +131,15 @@ export const SearchProvider = ({ children }) => {
       const resultData = await response.json();
       const subjects = resultData.data.subjects.edges;
 
-      const results = [];
-      if (subjects.length > 0) {
-        const uniqueGitoids = new Map();
-
-        subjects.forEach(({ node }) => {
-          const gitoid = node.statement.dsse[0].gitoidSha256;
-          if (!uniqueGitoids.has(gitoid)) {
-            uniqueGitoids.set(gitoid, new Set());
-          }
-          uniqueGitoids.get(gitoid).add({
-            name: node.name,
-            predicate: node.statement.predicate,
-          });
-        });
-
-        for (const [gitoid, nodes] of uniqueGitoids.entries()) {
-          results.push({
-            gitoid,
-            nodes: Array.from(nodes),
-            statement: null, // Statement will be loaded on demand
-            signatures: null, // Signatures will be loaded on demand
-          });
-        }
-      }
+      const results = subjects.map(({ node }) => ({
+        name: node.name,
+        predicate: node.statement.predicate,
+        gitoid: node.statement.dsse[0]?.gitoidSha256 || null,
+        statement: null, // Statement will be loaded on demand
+        signatures: null, // Signatures will be loaded on demand
+        digestMatch: hash,
+        node: node
+      }));
 
       setSearchResults(results.length > 0 ? results : null);
     } catch (error) {

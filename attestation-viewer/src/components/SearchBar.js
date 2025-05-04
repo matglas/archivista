@@ -16,7 +16,7 @@ function SearchBar() {
       <input
         type="text"
         className="form-control me-2"
-        placeholder="Enter hash to search"
+        placeholder="Enter digest to search"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && onSearch()}
